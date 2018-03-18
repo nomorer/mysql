@@ -99,7 +99,7 @@ func UnmarshalRows(v interface{}, scanner Scanner) error {
 				}
 			}
 
-			base := Deref(rte.Elem())
+			base := deref(rte.Elem())
 			switch base.Kind() {
 			case reflect.Bool,
 				reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
@@ -144,7 +144,7 @@ func UnmarshalRows(v interface{}, scanner Scanner) error {
 }
 
 func getTaggedFieldValueMap(v reflect.Value) (map[string]interface{}, error) {
-	rt := Deref(v.Type())
+	rt := deref(v.Type())
 	size := rt.NumField()
 	result := make(map[string]interface{}, size)
 
@@ -161,7 +161,7 @@ func getTaggedFieldValueMap(v reflect.Value) (map[string]interface{}, error) {
 				return nil, notReadableValueError
 			}
 			if valueField.IsNil() {
-				baseValueType := Deref(valueField.Type())
+				baseValueType := deref(valueField.Type())
 				valueField.Set(reflect.New(baseValueType))
 			}
 			result[key] = valueField.Interface()
@@ -194,7 +194,7 @@ func mapStructFieldsIntoSlice(v reflect.Value, columns []string) ([]interface{},
 					return nil, notReadableValueError
 				}
 				if valueField.IsNil() {
-					baseValueType := Deref(valueField.Type())
+					baseValueType := deref(valueField.Type())
 					valueField.Set(reflect.New(baseValueType))
 				}
 				values[i] = valueField.Interface()
@@ -229,7 +229,7 @@ func parseTagName(field reflect.StructField) string {
 	}
 }
 
-func Deref(t reflect.Type) reflect.Type {
+func deref(t reflect.Type) reflect.Type {
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
